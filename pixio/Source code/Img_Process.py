@@ -51,6 +51,7 @@ def ref():
 
 def clr():
     lbx.delete(0,END)
+    b5.config(image=up_img)
 
 def delete():
     lbx.delete(ANCHOR)

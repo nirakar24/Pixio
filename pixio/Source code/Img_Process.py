@@ -1,6 +1,8 @@
 from ast import Name
 from time import sleep
-from PIL import Image
+import PIL.Image
+from PIL import ImageTk
+from PIL import *
 from pytesseract import pytesseract
 from tkinter.font import BOLD
 import requests
@@ -112,12 +114,14 @@ def resize2(percent):
      heit=int(h*(percent/100))
      dimen=(wid,heit)
      img=cv.resize(image,dimen,interpolation=cv.INTER_AREA)
- 
+     
      cv.imshow("Resized image",img)
      key=cv.waitKey(0)
  
      if key==ord("s"):
-         cv.imwrite(f"C:/Sample/{lbx.get(ANCHOR)}|.jpg",img)
+        cv.imwrite(f"C:/Sample/{lbx.get(ANCHOR)}|.jpg",img)
+
+         
 
     except ValueError:
         messagebox.showerror("Error",'Enter a "Integer Value"')
@@ -177,15 +181,25 @@ def add_img():
         img=img.replace(".jpg","")
         lbx.insert(END,img)
 
+
 def show():
-    pic=cv.imread(f"C:\Sample\{lbx.get(ANCHOR)}.jpg")
-    cv.imshow("Picture",pic)
+    pic=PIL.Image.open(f"C:\Sample\{lbx.get(ANCHOR)}.jpg")
+    # pic=pic.resize((200,100))
+    displayimage(pic)
+    # cv.imshow("Picture",pic)
 
-    k=cv.waitKey(0)
+def aspect(img,new_height):
+    wid,heit=img.size
+    ratio=wid/heit
+    new_width=int(ratio*new_height)
+    resized_img = img.resize((new_width,new_height))
+    return resized_img
 
-    if k==ord("s"):
-     cv.imwrite(f"C:/Sample/{lbx.get(ANCHOR)}|.jpg",pic)
-
+def displayimage(img):
+    img_dis= aspect(img,int(f4.winfo_height()))
+    img_dis = ImageTk.PhotoImage(img_dis)
+    b5.config(image=img_dis)
+    b5.image = img_dis
 
 #funtions</>
 
@@ -221,18 +235,20 @@ lbx.pack(side=RIGHT,fill=Y)
 
 
 #Frames
-f1=Frame(root,width=45,bg=win,height=45)
+f1=Frame(root,width=45,bg=win,height=20)
 f1.pack(side=TOP,fill=X)
-f3=Frame(root,bg=win,height=50)
+f3=Frame(root,bg=win,height=20)
 f3.pack(side=BOTTOM,fill=BOTH)
 f2=Frame(root,bg=win,height=45)
 f2.pack(side=BOTTOM,fill=X)
-f4=Frame(root,bg=win,height=50)
+f4=Frame(root,bg=win,height=700)
 f4.pack(fill=BOTH)
+f4.pack_propagate(False)
 
 #labels
 l1=Label(f2,text="X",font=(16),bg=win)
 l1.grid(row=3,column=1)
+
 
 #Entry Widget
 width=IntVar
@@ -247,8 +263,8 @@ per_cent=Entry(f2,textvariable=percent,width=5,bg=ls)
 per_cent.grid(row=3,column=3,padx=25,pady=10)
 
 #Buttons
-b1=Button(f1,image=original,cursor="hand2",command=show,bg=win,border=0)
-b1.grid(row=0,column=0,padx=15,pady=15)
+b1=Button(f2,image=original,cursor="hand2",command=show,bg=win,border=0)
+b1.grid(row=2,column=7,padx=15,pady=15)
 b2=Button(f2,image=img_to_txt,cursor="hand2",command=tesserect,bg=win,border=0)
 b2.grid(row=2,column=4,padx=25,pady=10)
 b3=Button(f2,image=res_ize,cursor="hand2",command=lambda:resize(wid_th.get(),heig_ht.get()),bg=win,border=0)
@@ -256,7 +272,7 @@ b3.grid(row=2,column=0,pady=10,columnspan=3)
 b4=Button(f2,image=rem_bg,cursor="hand2",command=rm_bg,bg=win,border=0)
 b4.grid(row=2,column=5,padx=25,pady=10)
 b5=Button(f4,image=up_img,cursor="hand2",command=add_img,borderwidth=0,bg=win,activebackground=win)
-b5.grid(row=0,column=1,padx=85)
+b5.pack()
 b6=Button(f2,image=res_ize2,cursor="hand2",command=lambda:resize2(per_cent.get()),bg=win,border=0)
 b6.grid(row=2,column=3,padx=20)
 b7=Button(f2,image=dimen_sion,cursor="hand2",command=dimen,bg=win,border=0)

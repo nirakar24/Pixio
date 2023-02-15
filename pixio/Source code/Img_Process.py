@@ -1,7 +1,7 @@
 from ast import Name
 from time import sleep
 import PIL.Image
-from PIL import ImageTk
+from PIL import ImageTk, ImageEnhance
 from PIL import *
 from pytesseract import pytesseract
 from tkinter.font import BOLD
@@ -41,6 +41,14 @@ def tesserect():
 def down():
         webbrowser.open_new_tab(
             'https://github.com/UB-Mannheim/tesseract/wiki'
+        )
+def unsplash():
+        webbrowser.open_new_tab(
+            'https://unsplash.com/'
+        )
+def pexels():
+        webbrowser.open_new_tab(
+            'https://www.pexels.com/'
         )
 
 def ref():
@@ -189,6 +197,11 @@ def show():
     displayimage(pic)
     # cv.imshow("Picture",pic)
 
+def show2(event):
+    pic=PIL.Image.open(f"C:\Sample\{lbx.get(ANCHOR)}.jpg")
+    # pic=pic.resize((200,100))
+    displayimage(pic)
+
 def aspect(img,new_height):
     wid,heit=img.size
     ratio=wid/heit
@@ -201,6 +214,10 @@ def displayimage(img):
     img_dis = ImageTk.PhotoImage(img_dis)
     b5.config(image=img_dis)
     b5.image = img_dis
+
+def brightness_callback():
+    pass
+
 
 #funtions</>
 
@@ -236,7 +253,7 @@ lbx.pack(side=RIGHT,fill=Y)
 
 
 #Frames
-f1=Frame(root,width=45,bg=win,height=20)
+f1=Frame(root,bg=win,height=20)
 f1.pack(side=TOP,fill=X)
 f3=Frame(root,bg=win,height=20)
 f3.pack(side=BOTTOM,fill=BOTH)
@@ -263,6 +280,27 @@ heig_ht.grid(row=3,column=2,pady=5,padx=13)
 per_cent=Entry(f2,textvariable=percent,width=5,bg=ls)
 per_cent.grid(row=3,column=3,padx=25,pady=10)
 
+#sliders
+brightnessSlider = Scale(f2, label="Brightness", from_=0, to=2, orient=HORIZONTAL, length=200,
+                         resolution=0.1, command=brightness_callback, bg=win, activebackground="purple",sliderrelief=FLAT)
+brightnessSlider.set(1)
+brightnessSlider.configure(font=('consolas',10,'bold'),foreground='black')
+# brightnessSlider.place(x=1070,y=15)
+brightnessSlider.grid(row=0,column=0,columnspan=4)
+
+contrastSlider = Scale(f2, label="Contrast", from_=0, to=2, orient=HORIZONTAL, length=200,
+                       command=brightness_callback, resolution=0.1, bg=win,sliderrelief=FLAT,foreground="red")
+contrastSlider.set(1)
+contrastSlider.configure(font=('consolas',10,'bold'),foreground='black')
+# contrastSlider.place(x=1070,y=90)
+contrastSlider.grid(row=0,column=4,columnspan=2)
+
+sharpnessSlider = Scale(f2, label="Sharpness", from_=0, to=2, orient=HORIZONTAL, length=200,
+                        command=brightness_callback, resolution=0.1, bg=win, sliderrelief=FLAT)
+sharpnessSlider.set(1)
+sharpnessSlider.configure(font=('consolas',10,'bold'),foreground='black')
+sharpnessSlider.grid(row=0,column=6,columnspan=2)
+
 #Buttons
 b1=Button(f2,image=original,cursor="hand2",command=show,bg=win,border=0)
 b1.grid(row=2,column=7,padx=15,pady=15)
@@ -285,12 +323,17 @@ file=Menu(menubar,tearoff=0)
 tools=Menu(menubar,tearoff=0)
 resze=Menu(tools,tearoff=0)
 color=Menu(menubar,tearoff=0)
+adjust=Menu(menubar,tearoff=0)
 download=Menu(menubar,tearoff=0)
 
 menubar.add_cascade(label="File",menu=file)
 menubar.add_cascade(label="Tools",menu=tools)
 menubar.add_cascade(label="Color space",menu=color)
+menubar.add_cascade(label="More Images",menu=adjust)
 menubar.add_cascade(label="Download",menu=download)
+
+adjust.add_command(label="Unsplash",command=unsplash)
+adjust.add_command(label="Pexels",command=pexels)
 
 file.add_command(label="Add images",command=add_img)
 file.add_command(label="Delete",command=delete)
@@ -321,6 +364,7 @@ quick.add_command(label="Exit",command=close)
 
 root.config(menu=menubar)
 root.bind("<Button-3>",popup_menu)
+root.bind("<Return>",show2)
 
 root.mainloop()
 #main window</>

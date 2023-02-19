@@ -389,21 +389,23 @@ file=Menu(menubar,tearoff=0)
 tools=Menu(menubar,tearoff=0)
 resze=Menu(tools,tearoff=0)
 color=Menu(menubar,tearoff=0)
-adjust=Menu(menubar,tearoff=0)
 download=Menu(menubar,tearoff=0)
+images=Menu(download,tearoff=0)
+
 
 menubar.add_cascade(label="File",menu=file)
 menubar.add_cascade(label="Tools",menu=tools)
 menubar.add_cascade(label="Color space",menu=color)
-menubar.add_cascade(label="More Images",menu=adjust)
+# menubar.add_cascade(label="More Images",menu=adjust)
 menubar.add_cascade(label="Download",menu=download)
 
-adjust.add_command(label="Unsplash",command=unsplash)
-adjust.add_command(label="Pexels",command=pexels)
+images.add_command(label="Unsplash",command=unsplash)
+images.add_command(label="Pexels",command=pexels)
 # adjust.add_command(label="new",command=lambda:config_f2(f2))
 
 file.add_command(label="Add images",command=add_img)
 file.add_command(label="Home",command=config_reverse)
+file.add_command(label="Save",command=save)
 file.add_command(label="Delete",command=delete)
 file.add_command(label="Clear list",command=clr)
 file.add_command(label="Refesh",command=ref)
@@ -422,6 +424,7 @@ tools.add_command(label="Rotate 270",command=lambda:flipped(-1))
 
 
 download.add_command(label="Tesserect engine",command=down)
+download.add_cascade(label="More Images",menu=images)
 
 #quick_access menu
 quick=Menu(root,tearoff=0)

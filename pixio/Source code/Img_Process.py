@@ -12,10 +12,32 @@ import os
 from tkinter import messagebox
 from tkinter import *
 from tkinter import filedialog
+import subprocess
 import datetime
 import webbrowser
 
+def config_f2():
+    global count
+    if not count > len(f2_frames)-2:
 
+        for frame in f2_frames:
+            frame.pack_forget()
+
+        count+=1
+        frame=f2_frames[count]
+        frame.pack()
+        
+def config_reverse():
+    global count
+    if not count==0:
+
+        for frame in f2_frames:
+            frame.pack_forget()
+
+        count-=1
+        frame=f2_frames[count]
+        frame.pack()
+    
 #Functions<>
 def tesserect():
     ask=messagebox.askyesno("Disclaimer","Make sure you have Tesserect engine installed at the following path\n'C:/Program Files/Tesseract-OCR/tesseract.exe'\n OR \n You can download it from 'Download' menu",icon="warning")
@@ -166,8 +188,9 @@ def rm_bg():
       root.config(cursor="") 
       ask=messagebox.askyesno("Sucess","file is saved at this location\n'C:/Sample/Output/\n\nDo you want to see results?")
       if ask==1:
-        pic=cv.imread(f"C:/Sample/Output/{lbx.get(ANCHOR)}.png")
-        cv.imshow("Picture",pic)
+        path=f"C:/Sample/Output/{lbx.get(ANCHOR)}.png"
+        if os.name=="nt":
+            os.startfile(path)
       else:
         return
 
@@ -190,8 +213,13 @@ def add_img():
         img=img.replace(".jpg","")
         lbx.insert(END,img)
 
+def save():
+    global pic
+    savefile = filedialog.asksaveasfile(defaultextension=".jpg")
+    outputImage.save(savefile)
 
 def show():
+    global pic
     pic=PIL.Image.open(f"C:\Sample\{lbx.get(ANCHOR)}.jpg")
     # pic=pic.resize((200,100))
     displayimage(pic)
@@ -217,22 +245,38 @@ def displayimage(img):
 
 def flipped(n):
     img=cv.imread(f"C:/Sample/{lbx.get(ANCHOR)}.jpg")
-    img = cv.flip(img, n)
-    percent=40
-    dim=img.shape
-    w=int(dim[1])
-    h=int(dim[0])
-    wid=int(w*(percent/100))
-    heit=int(h*(percent/100))
-    dimen=(wid,heit)
-    img=cv.resize(img,dimen,interpolation=cv.INTER_AREA)
-     
-    cv.imshow("Flipped right",img)
+    img = cv.flip(img, n)     
+    # cv.imshow("Flipped right",img)
+    # cv.waitKey(0)
+# Save the image to a temporary file
+    cv.imwrite('temp.jpg', img)
     # img=cv.imshow("Flipped",img)
+    if os.name == 'nt':  # Check if the OS is Windows
+        subprocess.Popen(['explorer', 'temp.jpg'])
 
-def brightness_callback():
-    pass
+def brightness_callback(brightness_pos):
+    brightness_pos = float(brightness_pos)
+    #print(brightness_pos)
+    global outputImage
+    enhancer = ImageEnhance.Brightness(pic)
+    outputImage = enhancer.enhance(brightness_pos)
+    displayimage(outputImage)
 
+def contrast(contra_pos):
+    contra_pos = float(contra_pos)
+    #print(contrast_pos)
+    global outputImage
+    enhancer = ImageEnhance.Contrast(pic)
+    outputImage = enhancer.enhance(contra_pos)
+    displayimage(outputImage)
+
+def sharp(sharp_pos):
+    sharp_pos = float(sharp_pos)
+    #print(sharpness_pos)
+    global outputImage
+    enhancer = ImageEnhance.Sharpness(pic)
+    outputImage = enhancer.enhance(sharp_pos)
+    displayimage(outputImage)
 
 #funtions</>
 
@@ -272,11 +316,19 @@ f1=Frame(root,bg=win,height=20)
 f1.pack(side=TOP,fill=X)
 f3=Frame(root,bg=win,height=20)
 f3.pack(side=BOTTOM,fill=BOTH)
-f2=Frame(root,bg=win,height=45)
-f2.pack(side=BOTTOM,fill=X)
+f2_main=Frame(root,bg=win,height=45)
+f2_main.pack(side=BOTTOM,fill=X,expand=True)
+f2=Frame(f2_main,bg=win,height=45)
+f2.pack(fill=X)
+f2_slider=Frame(f2_main,bg=win,height=45)
+# f2_slider.pack(fill=X)
 f4=Frame(root,bg=win,height=700)
 f4.pack(fill=BOTH)
 f4.pack_propagate(False)
+
+# MULTIPLE frames
+f2_frames=[f2,f2_slider]
+count=0
 
 #labels
 l1=Label(f2,text="X",font=(16),bg=win)
@@ -296,25 +348,24 @@ per_cent=Entry(f2,textvariable=percent,width=5,bg=ls)
 per_cent.grid(row=3,column=3,padx=25,pady=10)
 
 #sliders
-brightnessSlider = Scale(f2, label="Brightness", from_=0, to=2, orient=HORIZONTAL, length=200,
-                         resolution=0.1, command=brightness_callback, bg=win, activebackground="purple",sliderrelief=FLAT)
+brightnessSlider = Scale(f2_slider, label="Brightness", from_=0, to=10, orient=HORIZONTAL, length=250, troughcolor=ls,
+                         resolution=0.1, command=brightness_callback, bg=win,sliderrelief=FLAT)
 brightnessSlider.set(1)
 brightnessSlider.configure(font=('consolas',10,'bold'),foreground='black')
 # brightnessSlider.place(x=1070,y=15)
-brightnessSlider.grid(row=0,column=0,columnspan=4)
-
-contrastSlider = Scale(f2, label="Contrast", from_=0, to=2, orient=HORIZONTAL, length=200,
-                       command=brightness_callback, resolution=0.1, bg=win,sliderrelief=FLAT,foreground="red")
+brightnessSlider.grid(row=0,column=0, padx=20,pady=50)
+contrastSlider = Scale(f2_slider, label="Contrast", from_=0, to=10, orient=HORIZONTAL, length=250, troughcolor=ls,
+                               command=contrast, resolution=0.1, bg=win,sliderrelief=FLAT,foreground="red")
 contrastSlider.set(1)
 contrastSlider.configure(font=('consolas',10,'bold'),foreground='black')
 # contrastSlider.place(x=1070,y=90)
-contrastSlider.grid(row=0,column=4,columnspan=2)
+contrastSlider.grid(row=0,column=1, padx=20,pady=50)
 
-sharpnessSlider = Scale(f2, label="Sharpness", from_=0, to=2, orient=HORIZONTAL, length=200,
-                        command=brightness_callback, resolution=0.1, bg=win, sliderrelief=FLAT)
+sharpnessSlider = Scale(f2_slider, label="Sharpness", from_=0, to=10, orient=HORIZONTAL, length=250,troughcolor=ls,
+                        command=sharp, resolution=0.1, bg=win, sliderrelief=FLAT)
 sharpnessSlider.set(1)
 sharpnessSlider.configure(font=('consolas',10,'bold'),foreground='black')
-sharpnessSlider.grid(row=0,column=6,columnspan=2)
+sharpnessSlider.grid(row=0,column=2, padx=20,pady=50)
 
 #Buttons
 b1=Button(f2,image=original,cursor="hand2",command=show,bg=win,border=0)
@@ -349,8 +400,10 @@ menubar.add_cascade(label="Download",menu=download)
 
 adjust.add_command(label="Unsplash",command=unsplash)
 adjust.add_command(label="Pexels",command=pexels)
+# adjust.add_command(label="new",command=lambda:config_f2(f2))
 
 file.add_command(label="Add images",command=add_img)
+file.add_command(label="Home",command=config_reverse)
 file.add_command(label="Delete",command=delete)
 file.add_command(label="Clear list",command=clr)
 file.add_command(label="Refesh",command=ref)
@@ -359,6 +412,7 @@ resze.add_command(label="by W x H",command=lambda:resize(wid_th.get(),heig_ht.ge
 resze.add_command(label="by %",command=lambda:resize2(per_cent.get()))
 
 tools.add_cascade(label="Resize",menu=resze)
+tools.add_command(label="Sliders",command=config_f2)
 tools.add_command(label="Remove Background",command=rm_bg)
 tools.add_command(label="Image to text",command=tesserect)
 tools.add_command(label="Dimensions",command=dimen)
@@ -378,6 +432,7 @@ quick.add_separator()
 quick.add_command(label="Refresh",command=ref)
 quick.add_command(label="Delete",command=delete)
 quick.add_command(label="Clear list",command=clr)
+quick.add_command(label="Save",command=save)
 quick.add_separator()
 quick.add_command(label="Exit",command=close)
 

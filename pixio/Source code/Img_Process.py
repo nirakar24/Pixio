@@ -248,7 +248,7 @@ rem_bg=PhotoImage(file="components\\rm_bg.png")
 dimen_sion=PhotoImage(file="components\\Dimensions.png")
 
 #listbox
-lbx=Listbox(root,border=7,width=30,bg=ls,relief=FLAT,font=(BOLD,18),selectbackground="white",selectforeground="black",foreground="black") 
+lbx=Listbox(root,border=7,width=int(screen_width//50),bg=ls,relief=FLAT,font=(BOLD,18),selectbackground="white",selectforeground="black",foreground="black") 
 lbx.pack(side=RIGHT,fill=Y)
 
 

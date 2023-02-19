@@ -215,6 +215,21 @@ def displayimage(img):
     b5.config(image=img_dis)
     b5.image = img_dis
 
+def flipped(n):
+    img=cv.imread(f"C:/Sample/{lbx.get(ANCHOR)}.jpg")
+    img = cv.flip(img, n)
+    percent=40
+    dim=img.shape
+    w=int(dim[1])
+    h=int(dim[0])
+    wid=int(w*(percent/100))
+    heit=int(h*(percent/100))
+    dimen=(wid,heit)
+    img=cv.resize(img,dimen,interpolation=cv.INTER_AREA)
+     
+    cv.imshow("Flipped right",img)
+    # img=cv.imshow("Flipped",img)
+
 def brightness_callback():
     pass
 
@@ -347,6 +362,10 @@ tools.add_cascade(label="Resize",menu=resze)
 tools.add_command(label="Remove Background",command=rm_bg)
 tools.add_command(label="Image to text",command=tesserect)
 tools.add_command(label="Dimensions",command=dimen)
+tools.add_command(label="Rotate 360",command=lambda:flipped(0))
+tools.add_command(label="Rotate 180",command=lambda:flipped(1))
+tools.add_command(label="Rotate 270",command=lambda:flipped(-1))
+
 
 download.add_command(label="Tesserect engine",command=down)
 

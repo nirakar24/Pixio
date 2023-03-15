@@ -73,6 +73,11 @@ def pexels():
             'https://www.pexels.com/'
         )
 
+def how():
+        webbrowser.open_new_tab(
+            'https://www.pexels.com/'
+        )
+
 def ref():
     root.config(cursor="wait")
     root.update()
@@ -278,6 +283,32 @@ def sharp(sharp_pos):
     outputImage = enhancer.enhance(sharp_pos)
     displayimage(outputImage)
 
+def art():
+    img=cv.imread(f"C:/Sample/{lbx.get(ANCHOR)}.jpg")
+    img_resized=cv.resize(img,None,fx=1,fy=1)
+
+    for i in range(3):
+        img_clear=cv.medianBlur(img_resized,3)
+
+    img_clear=cv.edgePreservingFilter(img_clear, sigma_s=5)
+
+    img_filter=cv.bilateralFilter(img_clear,3,10,5)
+
+    for i in range(2):
+        img_filter=cv.bilateralFilter(img_filter,3,20,10)
+
+    for i in range(3):
+        img_filter=cv.bilateralFilter(img_filter,5,30,10)
+
+    mask = cv.GaussianBlur(img_filter, (7,7), 2)
+    img_sharp = cv.addWeighted(img_filter,1.5,mask,-0.5,0)
+    img_sharp = cv.addWeighted(img_filter,1.4,mask,-0.2,10)
+
+    cv.imwrite(f'C:\\Sample\\temp\\{lbx.get(ANCHOR)}.png',img_sharp)
+    temp=f'C:\\Sample\\temp\\{lbx.get(ANCHOR)}.png'
+    if os.name=="nt":
+            os.startfile(temp)
+
 #funtions</>
 
 # colors
@@ -310,7 +341,6 @@ dimen_sion=PhotoImage(file="components\\Dimensions.png")
 lbx=Listbox(root,border=7,width=int(screen_width//50),bg=ls,relief=FLAT,font=(BOLD,18),selectbackground="white",selectforeground="black",foreground="black") 
 lbx.pack(side=RIGHT,fill=Y)
 
-
 #Frames
 f1=Frame(root,bg=win,height=20)
 f1.pack(side=TOP,fill=X)
@@ -319,7 +349,7 @@ f3.pack(side=BOTTOM,fill=BOTH)
 f2_main=Frame(root,bg=win,height=45)
 f2_main.pack(side=BOTTOM,fill=X,expand=True)
 f2=Frame(f2_main,bg=win,height=45)
-f2.pack(fill=X)
+f2.pack(fill=X,expand=True)
 f2_slider=Frame(f2_main,bg=win,height=45)
 # f2_slider.pack(fill=X)
 f4=Frame(root,bg=win,height=700)
@@ -390,6 +420,7 @@ tools=Menu(menubar,tearoff=0)
 resze=Menu(tools,tearoff=0)
 color=Menu(menubar,tearoff=0)
 download=Menu(menubar,tearoff=0)
+How_it_works = Menu(menubar,tearoff=0)
 images=Menu(download,tearoff=0)
 
 
@@ -398,6 +429,7 @@ menubar.add_cascade(label="Tools",menu=tools)
 menubar.add_cascade(label="Color space",menu=color)
 # menubar.add_cascade(label="More Images",menu=adjust)
 menubar.add_cascade(label="Download",menu=download)
+menubar.add_cascade(label="More",menu=How_it_works)
 
 images.add_command(label="Unsplash",command=unsplash)
 images.add_command(label="Pexels",command=pexels)
@@ -418,6 +450,7 @@ tools.add_command(label="Sliders",command=config_f2)
 tools.add_command(label="Remove Background",command=rm_bg)
 tools.add_command(label="Image to text",command=tesserect)
 tools.add_command(label="Dimensions",command=dimen)
+tools.add_command(label="Water art",command=art)
 tools.add_command(label="Rotate 360",command=lambda:flipped(0))
 tools.add_command(label="Rotate 180",command=lambda:flipped(1))
 tools.add_command(label="Rotate 270",command=lambda:flipped(-1))
@@ -425,6 +458,8 @@ tools.add_command(label="Rotate 270",command=lambda:flipped(-1))
 
 download.add_command(label="Tesserect engine",command=down)
 download.add_cascade(label="More Images",menu=images)
+
+How_it_works.add_command(label="How it works?",command=how)
 
 #quick_access menu
 quick=Menu(root,tearoff=0)

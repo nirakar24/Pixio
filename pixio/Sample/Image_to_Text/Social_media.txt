@@ -1,5 +1,0 @@
-start with backend 
-
-1. install nodemon
-2. install node packages
-3. create index.js

@@ -75,7 +75,7 @@ def pexels():
 
 def how():
         webbrowser.open_new_tab(
-            'https://www.pexels.com/'
+            'https://github.com/nirakar24/Pixio/blob/master/pixio/How%20it%20works/README.md'
         )
 
 def ref():

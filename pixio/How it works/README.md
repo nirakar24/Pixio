@@ -25,4 +25,10 @@ Create the effect that is desired on the image by applying bilateral filter (it 
 Tuning may include sharpening, dehazing, contrast enhancement, etc.
 In this algoritm we sharpenend the image by creating a gaussian mask and subtracting it from the original image.
 
+<div>
+<img width="400" alt="main2" src="https://user-images.githubusercontent.com/101456316/225216832-6839eb31-8f86-4798-bd8c-e62281ae1eea.jpg">
+<img width="400" alt="main2" src="https://user-images.githubusercontent.com/101456316/225216868-8071c8f1-d1f4-443d-9955-c4cf04f3bf8b.png"></div>
+
+
+
 
